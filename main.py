@@ -2,7 +2,9 @@
 """
 Created on Sat May  4 14:11:40 2019
 
-@author: Erick
+@author: Morgan Hooker & Erick Naunay
+Python programming
+
 """
 import os
 import sys
@@ -37,8 +39,9 @@ class MapGraph():
         self._data[key] = []
     
     #
-    #Add friends to any user
+    #Add neighbor city to a city
     #Valides existance and do not override
+    #Use a dictionary to storage name and weight
     #
     def add_edge(self, to, _from):
         
@@ -49,7 +52,7 @@ class MapGraph():
         elif not _from["name"] in self._data.keys():
             raise ValueError('from node does not exist!')
         
-        #verify if the friendship to-from already exists (dont override)
+        #verify if the conection to-from already exists (dont override)
         if _from["name"] not in self._data[to["name"]]:
             self._data[to["name"]].append(_from)
             
@@ -58,7 +61,7 @@ class MapGraph():
         else:
             print("{} and you are already friends".format(to))
     
-    #Print the social network       
+    #Print the map network       
     def __str__(self):
         
         result= ""
@@ -74,16 +77,23 @@ class MapGraph():
         
         return obj in self._data.keys()
     
+    #Algorithm to find the shortest path from a starting node to the end node
     def shortest_path(self, start, end):
         
+        #two data structure that will keep track of the cities tranversed
         self.univistedVertex = []
         self.visitedVertex = []
         
+        #Verify if the start and end cities are in the map
         if not start in self._data.keys():
             return -1
         if not end in self._data.keys():
             return -1
         
+        #clean up the data structure used for the algorithm
+        #"Matrix" DS, a dictionary an a list a value, city : [distance, pevious node]
+        #The distance is set to infinity and the previous node to None
+        #Distance of the start node is set to zero
         for key in self.matrix.keys():
             if key == start:
                 self.matrix[key][0] = 0
@@ -94,27 +104,38 @@ class MapGraph():
             self.univistedVertex.append(key) 
         
        
-        
+        #Visit all unvisited vertixes
         while len(self.univistedVertex) != 0:
             
+            #Get an univisted vertix with the minimum distance
             vertix = self.minVertix()
             
             #print(vertix)
             #print(self.univistedVertex)
             
+            #delete the vertix from the unvisited list
             self.univistedVertex.remove(vertix)
             
+            #get all the neighbor cities of the vertix 
             for nextCity in self._data[vertix]:
+                
+                #Does not re-visit neighbors
                 if not nextCity in self.visitedVertex:
                     
+                    #calculate the distance to the neighbor respect to the start point
                     newDistance = self.matrix[vertix][0] + nextCity["weight"]
                     
+                    #if the distance is smaller than the previous distance update it
                     if newDistance < self.matrix[nextCity["name"]][0]:
                         self.matrix[nextCity["name"]][0] = newDistance
                         self.matrix[nextCity["name"]][1] = vertix 
             
+            #add the vertiex to the visited list
             self.visitedVertex.append(vertix)
         
+        #
+        #Search the path from the start to the goal citie
+        #
         path = []
         path.append(end)
         
@@ -122,6 +143,10 @@ class MapGraph():
 
         prev = end
         
+        #
+        #Transverse all the matrix starting in the goal citie and then viisting the previous value
+        #Until it reaches to the start citie
+        #
         while pathDistance != 0:
             prev = self.matrix[prev][1]
             path.append(prev);
@@ -129,12 +154,13 @@ class MapGraph():
         
         #print(path)
         
-        result = ""
-        
-        path.reverse()
-        
-        for index in range(0, len(path)):
-            if index != len(path)-1:
+        #
+        #Print graphically the path found
+        #
+        result = "Path: "
+
+        for index in range(len(path)-1, -1, -1):
+            if index != 0:
                 result +="{}->".format(path[index])
             else:
                 result += "{}\n".format(path[index])
@@ -147,7 +173,8 @@ class MapGraph():
         #print(self.visitedVertex)
         #print(self.matrix)
         
-        
+    
+    #get a unvisited vertix with the minimun distance    
     def minVertix(self):
         
         minValue = sys.maxsize
@@ -233,12 +260,15 @@ class MapGraph():
 
 
 def main():
+    
+    #graph creation and import data from file
     _map = MapGraph()
     
     _map = MapGraph.import_file(FILE_LOCATION)
     
-    print(_map)
+    #print(_map)
     
+    #Menu options
     while True:
         start = input ("Insert start location: ")
         goal = input ("Insert end location: ")
@@ -247,6 +277,7 @@ def main():
             print("{} or {} are not register cities.".format(start, goal))
         
         if (input("Quit program? (yes/no): ") == "yes"):
+            print("Thanks for using this program.")
             break
 
 if __name__ == '__main__':
