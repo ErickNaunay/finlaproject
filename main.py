@@ -149,7 +149,7 @@ class MapGraph():
         #
         while pathDistance != 0:
             prev = self.matrix[prev][1]
-            path.append(prev);
+            path.append(prev)
             pathDistance = self.matrix[prev][0]
         
         #print(path)
@@ -185,7 +185,7 @@ class MapGraph():
                 minValue = self.matrix[key][0]
                 minKey = key
         
-        return minKey;
+        return minKey
     
     #
     # Reads the data from files paths

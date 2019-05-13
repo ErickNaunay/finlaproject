@@ -1,18 +1,13 @@
 #!usr/bin/python python3
 
 from itertools import permutations
+import random
 
 class Node():
 
-    def __init__(self):
+    def __init__(self, name):
         
-        self.name = ""
-        self.cost = None
-
-        self.up = None
-        self.down = None
-        self.right = None
-        self.left = None
+        self.name = name
 
     def __str__ (self):
 
@@ -26,20 +21,33 @@ def printMatrix(matrix):
 
 def main():
     
-    SIZE = 10
+    SIZE = 100
     STR_RAND = "ABCDEFGHI"
-    array_nodes = [[ Node() for _ in range(SIZE)] for y in range(SIZE)]
+    filename = "test.txt"
+    x = 0
+    
     names = ["".join(s) for s in permutations(STR_RAND)]
-    ctr = 0
-
+    array_nodes = []
+    
+    for _ in range(SIZE):
+        temp = []
+        for _ in range(SIZE):
+            temp.append(Node(names[x]))
+            x += 1
+        array_nodes.append(temp)
     #print(names)
 
-    for rows in array_nodes:
-        for node in rows:
-            node.name = names[ctr]
-            ctr = ctr + 1
-    
-    printMatrix(array_nodes)
+    with open(filename, "w") as fopen:
+
+        for i in range(SIZE):
+            for j in range(SIZE-1):
+                
+                fopen.write("{},{},{}\n".format(array_nodes[i][j].name, array_nodes[i][j+1].name, random.randint(1,100)))
+                fopen.write("{},{},{}".format(array_nodes[j][i].name, array_nodes[j+1][i].name, random.randint(1,100)))
+                #if i != SIZE-1 and j !=SIZE-2:
+                fopen.write("\n")
+            
+    #printMatrix(array_nodes)
     #print(array_nodes)
     
 
