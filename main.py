@@ -249,7 +249,10 @@ class MapGraph():
                 graph.matrix[key].append(None)
             
         return graph
-            
+
+    @classmethod
+    def bfs_graph_transversal(cls, graph):
+        pass
     #
     # Iterator for username and friends relation
     #
